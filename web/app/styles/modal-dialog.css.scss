@@ -1,0 +1,47 @@
+@import 'variables';
+
+.modal-dialog-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: none;
+
+  &.visible { display: flex; }
+  justify-content: center;
+  align-items: center;
+
+  > .dialog-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-color: rgba(black, 0.3);
+
+    z-index: 1000;
+  }
+
+  > .dialog-body {
+    position: relative;
+
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(black, 0.3);
+
+    z-index: 1001;
+  }
+
+  h1 {
+    margin: 0;
+    padding: 10px;
+
+    // border-bottom: 1px solid $color;
+
+    text-align: center;
+    color: $color;
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,54 @@
+@import url(https://fonts.googleapis.com/css?family=Arimo:400,700&subset=latin,cyrillic);
+@import 'variables';
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+html, body, button, input, h1, h2, h3, h4, h5, h6 {
+  font-family: 'Arimo', sans-serif;
+}
+
+a {
+  color: inherit;
+
+  &:hover {
+    color: $color;
+  }
+}
+
+.view-content {
+  width: $site-width;
+  margin: 0 auto;
+}
+
+.padding {
+  padding: 20px;
+}
+
+input.form-control, button.btn {
+  border-radius: 0;
+}
+
+.btn-primary {
+  background-color: $color;
+  border-color: $color;
+
+  &:hover {
+    background-color: darken($color, 10%);
+    border-color: darken($color, 10%);
+  }
+}
+
+.form-control:focus {
+  border-color: $color;
+}
+
+form {
+  margin: 0;
+}
+
+fieldset:last-child {
+  margin-bottom: 0;
+}

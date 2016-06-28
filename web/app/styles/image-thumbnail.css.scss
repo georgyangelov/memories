@@ -1,0 +1,46 @@
+@import 'variables';
+
+.image-thumbnail {
+  position: relative;
+
+  background-image: url('http://www.hillspet.com/HillsPetUS/v1/portal/en/us/cat-care/images/HP_PCC_md_0130_cat53.jpg');
+  background-size: cover;
+
+  overflow: hidden;
+
+  .controls {
+    opacity: 0;
+    transform: scale(2);
+    transition: opacity .2s ease-in-out, transform .2s ease-in-out;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding: 10px;
+
+    background-color: rgba(black, .4);
+
+    color: white;
+    text-align: center;
+
+    h2 {
+      margin-top: 30%;
+      font-size: 18px;
+    }
+
+    h3 {
+      font-size: 13px;
+      color: darken(white, 10%);
+    }
+  }
+
+  &:hover {
+    .controls {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}

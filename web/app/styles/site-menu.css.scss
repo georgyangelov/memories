@@ -1,0 +1,15 @@
+@import 'variables';
+
+.site-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    float: left;
+  }
+
+  li + li {
+    margin-left: 40px;
+  }
+}

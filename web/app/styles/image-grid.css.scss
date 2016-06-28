@@ -1,0 +1,28 @@
+@import 'variables';
+
+.image-grid {
+  .image-grid-row {
+    margin-top: 1px;
+
+    &::after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+  }
+
+  .image-grid-image {
+    float: left;
+
+    padding-left: 1px;
+
+    &:last-child {
+      padding-right: 1px;
+    }
+
+    > .image-thumbnail {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
