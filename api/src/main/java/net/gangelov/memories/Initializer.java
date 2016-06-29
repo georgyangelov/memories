@@ -1,5 +1,7 @@
 package net.gangelov.memories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.sql.SQLException;
@@ -22,6 +24,9 @@ public class Initializer implements ServletContextListener
             System.out.println("Cannot load postgresql driver");
             e.printStackTrace();
         }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
     }
 
     public void contextDestroyed(ServletContextEvent contextEvent) { }

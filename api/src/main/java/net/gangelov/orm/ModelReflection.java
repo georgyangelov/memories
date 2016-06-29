@@ -2,10 +2,7 @@ package net.gangelov.orm;
 
 import org.reflections.Reflections;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +10,7 @@ import java.util.Set;
 public class ModelReflection {
     public final String tableName;
     public String idName;
+    public String createTimestamp = null, updateTimestamp = null;
 
     public final Class<? extends Model> klass;
     public final Map<String, java.lang.reflect.Field> attributes = new HashMap<>();
@@ -30,6 +28,12 @@ public class ModelReflection {
             } else if (field.isAnnotationPresent(Field.class)) {
                 attributes.put(field.getAnnotation(Field.class).name(), field);
             }
+
+            if (field.isAnnotationPresent(CreateTimestamp.class)) {
+                createTimestamp = field.getAnnotation(Field.class).name();
+            } else if (field.isAnnotationPresent(UpdateTimestamp.class)) {
+                updateTimestamp = field.getAnnotation(Field.class).name();
+            }
         }
     }
 
@@ -44,7 +48,11 @@ public class ModelReflection {
 
     public void setValue(Model model, String name, Object value) {
         try {
-            attributes.get(name).set(model, value);
+            if (value instanceof Timestamp) {
+                attributes.get(name).set(model, ((Timestamp) value).toInstant());
+            } else {
+                attributes.get(name).set(model, value);
+            }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new RuntimeException("Cannot set value on field - is private");
@@ -86,7 +94,7 @@ public class ModelReflection {
                     continue;
                 }
 
-                field.set(model, resultSet.getObject(i));
+                setValue(model, columnName, resultSet.getObject(i));
             }
 
             return model;

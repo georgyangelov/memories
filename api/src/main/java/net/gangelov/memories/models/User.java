@@ -1,6 +1,9 @@
 package net.gangelov.memories.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import net.gangelov.memories.Database;
 import net.gangelov.orm.*;
 import org.mindrot.jbcrypt.BCrypt;
@@ -8,6 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 
 @Table(name="users")
 public class User extends Model {
@@ -24,6 +28,16 @@ public class User extends Model {
     @JsonIgnore
     @Field(name="access_token")
     public String accessToken;
+
+    @CreateTimestamp
+    @Field(name="created_at")
+    @JsonSerialize(using = InstantSerializer.class)
+    public Instant createdAt;
+
+    @UpdateTimestamp
+    @Field(name="updated_at")
+    @JsonSerialize(using = InstantSerializer.class)
+    public Instant updatedAt;
 
     public User() {
         super(User.class);

@@ -3,6 +3,7 @@ package net.gangelov.orm;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.Instant;
 
 public class Model {
     public static void initialize(String connectionString, String modelPackage) throws SQLException {
@@ -32,6 +33,14 @@ public class Model {
     }
 
     private void create(ModelReflection r) throws SQLException {
+        if (r.createTimestamp != null) {
+            r.setValue(this, r.createTimestamp, Instant.now());
+        }
+
+        if (r.updateTimestamp != null) {
+            r.setValue(this, r.updateTimestamp, Instant.now());
+        }
+
         QueryResult result = r.db.query()
                 .insert()
                 .into(r.tableName)
@@ -43,6 +52,10 @@ public class Model {
     }
 
     private void update(ModelReflection r) throws SQLException {
+        if (r.updateTimestamp != null) {
+            r.setValue(this, r.updateTimestamp, Instant.now());
+        }
+
         QueryResult result = r.db.query()
                 .update()
                 .table(r.tableName)

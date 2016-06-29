@@ -263,12 +263,20 @@ public class Query<T extends Model> implements Cloneable {
         int i = 1;
 
         for (Object value : values.values()) {
-            statement.setObject(i++, value);
+            if (value instanceof Instant) {
+                statement.setObject(i++, Timestamp.from((Instant)value));
+            } else {
+                statement.setObject(i++, value);
+            }
         }
 
         for (List<Object> whereValues : wheres.values()) {
             for (Object value : whereValues) {
-                statement.setObject(i++, value);
+                if (value instanceof Instant) {
+                    statement.setObject(i++, Timestamp.from((Instant)value));
+                } else {
+                    statement.setObject(i++, value);
+                }
             }
         }
 
