@@ -1,3 +1,7 @@
 /api/target
 /api/out
 /api/.idea/workspace.xml
+/api/.idea/artifacts
+/api/.idea/dataSources.ids
+/api/.idea/dataSources.xml
+/api/.idea/libraries
