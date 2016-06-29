@@ -5,16 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.gangelov.memories.models.User;
 import net.gangelov.memories.rest.responses.ApiError;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @Path("/users")
 public class Users {
@@ -29,11 +24,18 @@ public class Users {
 
         user.email = data.get("email").asText();
         user.setPassword(user.password);
+        user.save();
 
-        if (!user.save()) {
-            throw new ApiError(500, "save_error", "Cannot save user");
-        }
+//        if (!user.save()) {
+//            throw new ApiError(500, "save_error", "Cannot save user");
+//        }
 
         return user;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> index() throws SQLException {
+        return User.query().results();
     }
 }
