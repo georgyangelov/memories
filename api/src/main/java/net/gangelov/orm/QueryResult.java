@@ -38,6 +38,22 @@ public class QueryResult<T extends Model> {
         return results;
     }
 
+    public T first() throws SQLException {
+        if (modelClass == null) {
+            throw new RuntimeException("Cannot get results without type argument");
+        }
+
+        return first(modelClass);
+    }
+
+    public <E extends Model> E first(Class<E> modelClass) throws SQLException {
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        return (E)ModelReflection.get(modelClass).loadFromResultSetRow(resultSet);
+    }
+
     public Object getSingle() throws SQLException {
         resultSet.next();
         return resultSet.getObject(1);

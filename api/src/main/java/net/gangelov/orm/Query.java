@@ -32,11 +32,11 @@ public class Query<T extends Model> implements Cloneable {
         this.connection = connection;
     }
 
-    public Query clone() {
-        Query obj = null;
+    public Query<T> clone() {
+        Query<T> obj = null;
 
         try {
-            obj = (Query)super.clone();
+            obj = (Query<T>)super.clone();
         } catch (CloneNotSupportedException e) {
             // This cannot happen
             e.printStackTrace();
@@ -48,19 +48,19 @@ public class Query<T extends Model> implements Cloneable {
         return obj;
     }
 
-    public Query forModel(Class<? extends Model> klass) {
-        Query q = select("*").from(ModelReflection.get(klass).tableName);
+    public Query<T> forModel(Class<T> klass) {
+        Query<T> q = select("*").from(ModelReflection.get(klass).tableName);
         q.modelClass = klass;
 
         return q;
     }
 
-    public Query select() {
+    public Query<T> select() {
         return select("*");
     }
 
-    public Query select(String select) {
-        Query q = clone();
+    public Query<T> select(String select) {
+        Query<T> q = clone();
 
         q.type = Type.SELECT;
         q.select = select;
@@ -68,80 +68,80 @@ public class Query<T extends Model> implements Cloneable {
         return q;
     }
 
-    public Query insert() {
-        Query q = clone();
+    public Query<T> insert() {
+        Query<T> q = clone();
 
         q.type = Type.INSERT;
 
         return q;
     }
 
-    public Query update() {
-        Query q = clone();
+    public Query<T> update() {
+        Query<T> q = clone();
 
         q.type = Type.UPDATE;
 
         return q;
     }
 
-    public Query delete() {
-        Query q = clone();
+    public Query<T> delete() {
+        Query<T> q = clone();
 
         q.type = Type.DELETE;
 
         return q;
     }
 
-    public Query table(String table) {
-        Query q = clone();
+    public Query<T> table(String table) {
+        Query<T> q = clone();
 
         q.table = table;
 
         return q;
     }
 
-    public Query from(String table) {
+    public Query<T> from(String table) {
         return table(table);
     }
 
-    public Query into(String table) {
+    public Query<T> into(String table) {
         return table(table);
     }
 
-    public Query set(String column, Object object) {
-        Query q = clone();
+    public Query<T> set(String column, Object object) {
+        Query<T> q = clone();
 
         q.values.put(column, object);
 
         return q;
     }
 
-    public Query set(Map<String, Object> values) {
-        Query q = clone();
+    public Query<T> set(Map<String, Object> values) {
+        Query<T> q = clone();
 
         q.values.putAll(values);
 
         return q;
     }
 
-    public Query where(String column, Object value) {
+    public Query<T> where(String column, Object value) {
         return whereSql("\"" + column + "\" = ?", value);
     }
 
-    public Query whereNot(String column, Object value) {
+    public Query<T> whereNot(String column, Object value) {
         return whereSql("\"" + column + "\" != ?", value);
     }
 
-    public Query whereSql(String where, Object... args) {
-        Query q = clone();
+    public Query<T> whereSql(String where, Object... args) {
+        Query<T> q = clone();
 
         q.wheres.put(where, Arrays.asList(args));
 
         return q;
     }
 
-    public Query returning(String column) {
-        Query q = clone();
+    public Query<T> returning(String column) {
+        Query<T> q = clone();
 
         q.returning = column;
 
@@ -245,6 +245,10 @@ public class Query<T extends Model> implements Cloneable {
 
     public List<T> results() throws SQLException {
         return execute().results();
+    }
+
+    public T first() throws SQLException {
+        return (T)execute().first();
     }
 
     public boolean exists() throws SQLException {

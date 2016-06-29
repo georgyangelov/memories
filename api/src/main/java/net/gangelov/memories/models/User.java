@@ -43,8 +43,12 @@ public class User extends Model {
         super(User.class);
     }
 
-    public static Query query() {
+    public static Query<User> query() {
         return query(User.class);
+    }
+
+    public Query<Photo> photos() {
+        return Photo.query().where("user_id", id);
     }
 
     public void setPassword(String password) {
