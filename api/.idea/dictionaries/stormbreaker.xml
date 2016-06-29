@@ -2,6 +2,7 @@
   <dictionary name="stormbreaker">
     <words>
       <w>gangelov</w>
+      <w>postgresql</w>
     </words>
   </dictionary>
 </component>
