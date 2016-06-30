@@ -2,15 +2,12 @@ package net.gangelov.memories.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
-import net.gangelov.memories.Database;
 import net.gangelov.orm.*;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.time.Instant;
 
 @Table(name="users")
@@ -57,5 +54,12 @@ public class User extends Model {
 
     public boolean checkPassword(String password) {
         return BCrypt.checkpw(password, this.password);
+    }
+
+    private static final SecureRandom random = new SecureRandom();
+
+    @Hook(on = Hook.Type.BEFORE_CREATE)
+    private void initAccessToken() {
+        accessToken = new BigInteger(130, random).toString(32);
     }
 }

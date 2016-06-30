@@ -11,7 +11,7 @@ public class Model {
         ModelReflection.loadClasses(modelPackage, connection);
     }
 
-    public static Query query(Class<? extends Model> klass) {
+    public static <T extends Model> Query<T> query(Class<T> klass) {
         return ModelReflection.get(klass).db.query()
                 .forModel(klass);
     }
@@ -41,6 +41,9 @@ public class Model {
             r.setValue(this, r.updateTimestamp, Instant.now());
         }
 
+        r.runHook(this, Hook.Type.BEFORE_SAVE);
+        r.runHook(this, Hook.Type.BEFORE_CREATE);
+
         QueryResult result = r.db.query()
                 .insert()
                 .into(r.tableName)
@@ -49,6 +52,9 @@ public class Model {
                 .execute();
 
         r.setValue(this, r.idName, result.getSingle());
+
+        r.runHook(this, Hook.Type.AFTER_CREATE);
+        r.runHook(this, Hook.Type.AFTER_SAVE);
     }
 
     private void update(ModelReflection r) throws SQLException {
@@ -56,11 +62,17 @@ public class Model {
             r.setValue(this, r.updateTimestamp, Instant.now());
         }
 
+        r.runHook(this, Hook.Type.BEFORE_SAVE);
+        r.runHook(this, Hook.Type.BEFORE_UPDATE);
+
         QueryResult result = r.db.query()
                 .update()
                 .table(r.tableName)
                 .set(r.valuesFor(this, false))
                 .where(r.idName, r.valueFor(this, r.idName))
                 .execute();
+
+        r.runHook(this, Hook.Type.AFTER_UPDATE);
+        r.runHook(this, Hook.Type.AFTER_SAVE);
     }
 }

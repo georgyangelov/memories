@@ -2,10 +2,10 @@ package net.gangelov.orm;
 
 import org.reflections.Reflections;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ModelReflection {
     public final String tableName;
@@ -14,6 +14,7 @@ public class ModelReflection {
 
     public final Class<? extends Model> klass;
     public final Map<String, java.lang.reflect.Field> attributes = new HashMap<>();
+    public final Map<Hook.Type, List<Method>> hooks = new HashMap<>();
 
     public Database db;
 
@@ -33,6 +34,19 @@ public class ModelReflection {
                 createTimestamp = field.getAnnotation(Field.class).name();
             } else if (field.isAnnotationPresent(UpdateTimestamp.class)) {
                 updateTimestamp = field.getAnnotation(Field.class).name();
+            }
+        }
+
+        for (Method method : klass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Hook.class)) {
+                Hook.Type hookType = method.getAnnotation(Hook.class).on();
+
+                if (!hooks.containsKey(hookType)) {
+                    List<Method> methods = new ArrayList<>();
+                    hooks.put(hookType, methods);
+                }
+
+                hooks.get(hookType).add(method);
             }
         }
     }
@@ -105,6 +119,24 @@ public class ModelReflection {
             e.printStackTrace();
             throw new RuntimeException("Cannot set model fields or constructor is private");
         }
+    }
+
+    public void runHook(Model model, Hook.Type type) {
+        if (!hooks.containsKey(type)) {
+            return;
+        }
+
+        hooks.get(type).forEach(method -> {
+            try {
+                method.setAccessible(true);
+                method.invoke(model);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Cannot call model hook");
+            }
+        });
     }
 
     static Map<String, ModelReflection> byTable = new HashMap<>();

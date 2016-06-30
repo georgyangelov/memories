@@ -26,10 +26,6 @@ public class Users {
         user.setPassword(user.password);
         user.save();
 
-//        if (!user.save()) {
-//            throw new ApiError(500, "save_error", "Cannot save user");
-//        }
-
         return user;
     }
 
