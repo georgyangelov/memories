@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class JSONParams {
-    JsonNode data;
+    private JsonNode data;
 
     public JSONParams(String body) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
