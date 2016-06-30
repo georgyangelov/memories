@@ -12,7 +12,7 @@ export default class ModalDialog extends React.Component {
     }
 
     hide() {
-        history.push(this.props.returnTo);
+        appHistory.push(this.props.returnTo);
     }
 
     render() {

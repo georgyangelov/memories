@@ -2,5 +2,6 @@ $_base-color: blueviolet;
 
 $color: darken($_base-color, 5%);
 $gray: lighten(black, 50%);
+$dark-red: darken(red, 20%);
 
 $site-width: 1280px;

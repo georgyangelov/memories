@@ -8,6 +8,13 @@ global.React = React;
 global.Link = Link;
 global.cx = classNames;
 global._ = _;
+global.request = request;
+global.serverRequest = request.defaults({
+    baseUrl: 'http://localhost:8080/',
+    headers: {
+        'Accept': 'application/json'
+    }
+});
 
 function requireGlobally(namespace, requireContext) {
     requireContext.keys().forEach(file => {
@@ -33,6 +40,7 @@ function requireAllStyles() {
 }
 
 requireGlobally(null, require.context('./components', true, /\.jsx?$/));
+requireGlobally(null, require.context('./stores', true, /\.jsx?$/));
 requireGlobally(null, require.context('./services', true, /\.jsx?$/));
 requireGlobally('views', require.context('./views', true, /\.jsx?$/));
 requireAllStyles();

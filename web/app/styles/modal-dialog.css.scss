@@ -44,4 +44,11 @@
     color: $color;
     font-size: 20px;
   }
+
+  .error {
+    background: $dark-red;
+    margin-bottom: 10px;
+    padding: 5px;
+    color: white;
+  }
 }

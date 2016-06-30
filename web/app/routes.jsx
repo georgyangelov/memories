@@ -3,10 +3,10 @@ import {Router, Route, IndexRoute, Link, hashHistory} from 'react-router';
 
 import App from './app.jsx';
 
-global.history = hashHistory;
+global.appHistory = hashHistory;
 
 render((
-    <Router history={hashHistory}>
+    <Router history={appHistory}>
         <Route path="/" component={App}>
             <IndexRoute component={views.Index} />
 

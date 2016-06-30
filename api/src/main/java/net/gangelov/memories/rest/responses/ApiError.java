@@ -25,6 +25,7 @@ public class ApiError extends WebApplicationException {
 
         json.put("error", error);
         json.put("message", message);
+        json.putArray("messages").add(message);
 
         return json;
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.gangelov.memories.models.User;
 import net.gangelov.memories.rest.requests.JSONParams;
 import net.gangelov.memories.rest.responses.ApiError;
+import net.gangelov.memories.rest.responses.AuthenticationResponse;
 import net.gangelov.validation.ValidationException;
 
 import javax.ws.rs.*;
@@ -33,5 +34,20 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> index() throws SQLException {
         return User.query().results();
+    }
+
+    @POST
+    @Path("/auth")
+    public AuthenticationResponse authenticate(JSONParams params) throws ValidationException, SQLException {
+        String email = params.requireString("email");
+        String password = params.requireString("password");
+
+        User user = User.query().where("email", email).first();
+
+        if (user == null || !user.checkPassword(password)) {
+            throw new ApiError(400, "invalid_credentials", "Invalid email or password");
+        }
+
+        return new AuthenticationResponse(user);
     }
 }
