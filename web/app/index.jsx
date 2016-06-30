@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router';
 import classNames from 'classnames';
 import _ from 'lodash';
+import request from 'request';
 
 global.React = React;
 global.Link = Link;
@@ -32,6 +33,7 @@ function requireAllStyles() {
 }
 
 requireGlobally(null, require.context('./components', true, /\.jsx?$/));
+requireGlobally(null, require.context('./services', true, /\.jsx?$/));
 requireGlobally('views', require.context('./views', true, /\.jsx?$/));
 requireAllStyles();
 

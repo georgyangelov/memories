@@ -23,8 +23,18 @@ module.exports = {
             {
                 test: /\.scss$/,
                 loaders: ['style', 'css?sourceMap', 'sass?sourceMap']
+            },
+            {
+                test: /\.json$/,
+                loaders: ['json-loader']
             }
         ]
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
+        noParse: /node_modules\/json-schema\/lib\/validate\.js/
     },
     output: {
         path: BUILD_DIR,
