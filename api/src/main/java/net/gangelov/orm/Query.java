@@ -228,11 +228,28 @@ public class Query<T extends Model> implements Cloneable {
     }
 
     public QueryResult<T> execute() throws SQLException {
-        PreparedStatement statement = statement();
+        String sql = toSQL();
+        List<Object> params = buildParameters();
 
         if (VERBOSE) {
-            System.out.println("ORM: " + toSQL());
+            System.out.println("ORM QUERY: " + toSQL());
+
+            if (params.size() > 0) {
+                System.out.println(
+                        "ORM DATA:  [" +
+                                params.stream().map(o -> {
+                                    if (o instanceof Integer) {
+                                        return o.toString();
+                                    } else {
+                                        return "'" + o.toString() + "'";
+                                    }
+                                }).collect(Collectors.joining(", ")) +
+                                "]"
+                );
+            }
         }
+
+        PreparedStatement statement = statement(sql, params);
 
         statement.execute();
 
@@ -261,27 +278,35 @@ public class Query<T extends Model> implements Cloneable {
         return result.getInt();
     }
 
-    private PreparedStatement statement() throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(toSQL());
-
-        int i = 1;
+    private List<Object> buildParameters() {
+        List<Object> params = new ArrayList<>();
 
         for (Object value : values.values()) {
             if (value instanceof Instant) {
-                statement.setObject(i++, Timestamp.from((Instant)value));
+                params.add(Timestamp.from((Instant)value));
             } else {
-                statement.setObject(i++, value);
+                params.add(value);
             }
         }
 
         for (List<Object> whereValues : wheres.values()) {
             for (Object value : whereValues) {
                 if (value instanceof Instant) {
-                    statement.setObject(i++, Timestamp.from((Instant)value));
+                    params.add(Timestamp.from((Instant)value));
                 } else {
-                    statement.setObject(i++, value);
+                    params.add(value);
                 }
             }
+        }
+
+        return params;
+    }
+
+    private PreparedStatement statement(String sql, List<Object> params) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        for (int i = 0; i < params.size(); i++) {
+            statement.setObject(i + 1, params.get(i));
         }
 
         return statement;
