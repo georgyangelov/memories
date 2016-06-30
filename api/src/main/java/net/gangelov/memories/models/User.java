@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import net.gangelov.orm.*;
+import net.gangelov.validation.ValidationErrors;
+import net.gangelov.validation.ValidationException;
+import net.gangelov.validation.Validator;
+import net.gangelov.validation.validators.CompositeValidator;
+import net.gangelov.validation.validators.FieldPresenceValidator;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.math.BigInteger;
@@ -61,5 +66,18 @@ public class User extends Model {
     @Hook(on = Hook.Type.BEFORE_CREATE)
     private void initAccessToken() {
         accessToken = new BigInteger(130, random).toString(32);
+    }
+
+    private static final Validator<User> validator = new CompositeValidator<>(
+            new FieldPresenceValidator<>("email", user -> user.email),
+            new FieldPresenceValidator<>("password", user -> user.password)
+    );
+
+    public ValidationErrors validate() {
+        return validator.validate(this);
+    }
+
+    public void ensureValid() throws ValidationException {
+        validator.ensureValid(this);
     }
 }
