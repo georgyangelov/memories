@@ -156,7 +156,7 @@ public class Query<T extends Model> implements Cloneable {
                 sql.append("select ");
                 sql.append(select);
                 sql.append(" from ");
-                sql.append("\"" + table + "\"");
+                sql.append("\"").append(table).append("\"");
 
                 if (wheres.size() > 0) {
                     sql.append(" where ");
@@ -166,7 +166,7 @@ public class Query<T extends Model> implements Cloneable {
                 break;
             case DELETE:
                 sql.append("delete from ");
-                sql.append("\"" + table + "\"");
+                sql.append("\"").append(table).append("\"");
 
                 if (wheres.size() > 0) {
                     sql.append(" where ");
@@ -175,7 +175,7 @@ public class Query<T extends Model> implements Cloneable {
 
                 break;
             case INSERT:
-                sql.append("insert into \"" + table + "\"");
+                sql.append("insert into \"").append(table).append("\"");
                 sql.append(" (");
                 sql.append(
                         values.keySet().stream()
@@ -188,12 +188,12 @@ public class Query<T extends Model> implements Cloneable {
                 sql.append(")");
 
                 if (returning != null) {
-                    sql.append(" returning \"" + returning + "\"");
+                    sql.append(" returning \"").append(returning).append("\"");
                 }
 
                 break;
             case UPDATE:
-                sql.append("update \"" + table + "\"");
+                sql.append("update \"").append(table).append("\"");
 
                 if (values.size() > 0) {
                     sql.append(" set ");
@@ -210,7 +210,7 @@ public class Query<T extends Model> implements Cloneable {
                 }
 
                 if (returning != null) {
-                    sql.append(" returning \"" + returning + "\"");
+                    sql.append(" returning \"").append(returning).append("\"");
                 }
 
                 break;
@@ -254,9 +254,9 @@ public class Query<T extends Model> implements Cloneable {
         statement.execute();
 
         if (modelClass != null) {
-            return new QueryResult(statement, modelClass);
+            return new QueryResult<T>(statement, modelClass);
         } else {
-            return new QueryResult(statement);
+            return new QueryResult<T>(statement);
         }
     }
 
