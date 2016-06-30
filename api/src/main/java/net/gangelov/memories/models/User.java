@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import net.gangelov.orm.*;
+import net.gangelov.orm.validators.FieldUniquenessValidator;
 import net.gangelov.validation.ValidationErrors;
 import net.gangelov.validation.ValidationException;
 import net.gangelov.validation.Validator;
 import net.gangelov.validation.validators.CompositeValidator;
+import net.gangelov.validation.validators.EmailValidator;
 import net.gangelov.validation.validators.FieldPresenceValidator;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -54,6 +56,10 @@ public class User extends Model {
     }
 
     public void setPassword(String password) {
+        if (password == null) {
+            return;
+        }
+
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
@@ -70,7 +76,9 @@ public class User extends Model {
 
     private static final Validator<User> validator = new CompositeValidator<>(
             new FieldPresenceValidator<>("email", user -> user.email),
-            new FieldPresenceValidator<>("password", user -> user.password)
+            new EmailValidator<>("email", user -> user.email),
+            new FieldPresenceValidator<>("password", user -> user.password),
+            new FieldUniquenessValidator<>(User.class, "email")
     );
 
     public ValidationErrors validate() {

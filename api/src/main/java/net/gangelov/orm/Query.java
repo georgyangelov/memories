@@ -238,7 +238,9 @@ public class Query<T extends Model> implements Cloneable {
                 System.out.println(
                         "ORM DATA:  [" +
                                 params.stream().map(o -> {
-                                    if (o instanceof Integer) {
+                                    if (o == null) {
+                                        return "null";
+                                    } else if (o instanceof Integer) {
                                         return o.toString();
                                     } else {
                                         return "'" + o.toString() + "'";
