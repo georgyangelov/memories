@@ -1,11 +1,15 @@
 export default class BaseStore {
     constructor(initialData) {
-        this.data = initialData;
+        this.state = initialData;
         this.watchers = {};
     }
 
     value(property) {
-        return this.data[property];
+        return this.state[property];
+    }
+
+    get(property) {
+        return this.state[property];
     }
 
     watch(property, callback) {
@@ -23,13 +27,13 @@ export default class BaseStore {
 
     notifyUpdateTo(property) {
         (this.watchers[property] || []).forEach((callback) => {
-            callback(this.data[property]);
+            callback(this.state[property]);
         });
     }
 
-    setState(data) {
-        this.data = _.merge({}, this.data, data);
+    setState(state) {
+        this.state = _.merge({}, this.state, state);
 
-        _.each(data, (value, key) => this.notifyUpdateTo(key));
+        _.each(state, (value, key) => this.notifyUpdateTo(key));
     }
 }

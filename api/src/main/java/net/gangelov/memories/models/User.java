@@ -70,7 +70,7 @@ public class User extends Model {
     private static final SecureRandom random = new SecureRandom();
 
     @Hook(on = Hook.Type.BEFORE_CREATE)
-    private void initAccessToken() {
+    public void generateAccessToken() {
         accessToken = new BigInteger(130, random).toString(32);
     }
 

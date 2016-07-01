@@ -19,6 +19,8 @@ public class SQLExceptionMapper implements ExceptionMapper<SQLException> {
         json.put("error", "internal_error");
         json.put("message", "Something went wrong.");
 
+        ex.printStackTrace(System.err);
+
         return Response.status(500)
                 .type(MediaType.APPLICATION_JSON)
                 .entity(json)

@@ -21,7 +21,7 @@ public class JSONParamsBodyReader implements MessageBodyReader<JSONParams> {
             Annotation[] annotations,
             MediaType mediaType
     ) {
-        return mediaType.equals(MediaType.APPLICATION_JSON_TYPE);
+        return type == JSONParams.class && mediaType.equals(MediaType.APPLICATION_JSON_TYPE);
     }
 
     @Override

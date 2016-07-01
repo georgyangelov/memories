@@ -11,14 +11,18 @@ export default class ModalDialog extends React.Component {
         document.body.style.overflow = '';
     }
 
-    hide() {
+    close() {
         appHistory.push(this.props.returnTo);
     }
 
     render() {
+        let children = React.Children.map(this.props.children, (child) => {
+            return React.cloneElement(child, {close: this.close.bind(this)})
+        });
+
         return <div className={cx('modal-dialog-container', {visible: this.props.visible})}>
-            <div className="dialog-overlay" onClick={this.hide.bind(this)}></div>
-            <div className="dialog-body">{this.props.children}</div>
+            <div className="dialog-overlay" onClick={this.close.bind(this)}></div>
+            <div className="dialog-body">{children}</div>
         </div>;
     }
 }

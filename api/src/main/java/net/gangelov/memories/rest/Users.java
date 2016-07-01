@@ -36,6 +36,19 @@ public class Users {
         return User.query().results();
     }
 
+    @GET
+    @Path("/{accessToken}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User findByAccessToken(@PathParam("accessToken") String accessToken) throws SQLException {
+        User user = User.query().where("access_token", accessToken).first();
+
+        if (user == null) {
+            throw new ApiError(404, "invalid_token", "Invalid access token");
+        }
+
+        return user;
+    }
+
     @POST
     @Path("/auth")
     public AuthenticationResponse authenticate(JSONParams params) throws ValidationException, SQLException {
@@ -49,5 +62,20 @@ public class Users {
         }
 
         return new AuthenticationResponse(user);
+    }
+
+    @POST
+    @Path("/deauth")
+    public void deauthenticate(JSONParams params) throws SQLException, ValidationException {
+        User user = User.query()
+                .where("access_token", params.requireString("accessToken"))
+                .first();
+
+        if (user == null) {
+            return;
+        }
+
+        user.generateAccessToken();
+        user.save();
     }
 }

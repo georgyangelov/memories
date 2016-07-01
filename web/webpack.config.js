@@ -5,6 +5,7 @@ var webpack = require('webpack'),
     APP_DIR = path.resolve(__dirname, 'app');
 
 module.exports = {
+    devtool: 'source-map',
     entry: [
         'webpack-dev-server/client?http://0.0.0.0:3000',
         'webpack/hot/only-dev-server',

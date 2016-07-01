@@ -1,35 +1,33 @@
 export default class User {
+    static findByToken(accessToken, next) {
+        Requests.get(`/users/${accessToken}`, next);
+    }
+
     static create(email, password, next) {
-        serverRequest.put({
+        Requests.apiNoAuth({
             url: '/users',
+            method: 'PUT',
             json: {
                 email: email,
                 password: password
             }
-        }, (error, response, data) => {
-            if (error || response.statusCode !== 200) {
-                return next(error || data || response.statusCode);
-            }
-
-            next(null, data);
-        });
+        }, next);
     }
 
     static auth(email, password, next) {
-        serverRequest.post({
+        Requests.apiNoAuth({
             url: '/users/auth',
+            method: 'POST',
             json: {
                 email: email,
                 password: password
             }
-        }, (error, response, data) => {
-            if (error || response.statusCode !== 200) {
-                return next(error || data || response.statusCode);
-            }
+        }, next);
+    }
 
-            CurrentUserStore.login(data.user, data.accessToken);
-
-            next(null, data);
-        });
+    static deauth(accessToken, next) {
+        Requests.post('/users/deauth', {
+            accessToken: accessToken
+        }, next);
     }
 }

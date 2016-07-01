@@ -11,6 +11,7 @@ render((
             <IndexRoute component={views.Index} />
 
             <Route path="/login" component={views.Login}/>
+            <Route path="/register" component={views.Register}/>
         </Route>
     </Router>
 ), document.getElementById('app'))
