@@ -30,6 +30,7 @@ public class BelongsToAssociation<T extends Model, R extends Model> extends Asso
         List<Object> keys = models.stream()
                 .map(model -> r.valueFor(model, key))
                 .filter(value -> value != null)
+                .distinct()
                 .collect(Collectors.toList());
 
         List<R> refs = refR.db.query().forModel(refModelClass)
