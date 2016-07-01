@@ -3,12 +3,14 @@ import {Link} from 'react-router';
 import classNames from 'classnames';
 import _ from 'lodash';
 import request from 'request';
+import Dropzone from 'react-dropzone';
 
 global.React = React;
 global.Link = Link;
 global.cx = classNames;
 global._ = _;
 global.request = request;
+global.Dropzone = Dropzone;
 
 function requireGlobally(namespace, requireContext) {
     requireContext.keys().forEach(file => {

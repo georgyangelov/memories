@@ -1,4 +1,10 @@
-export default class Index extends React.Component {
+export default class Index extends StoreAwareComponent {
+    constructor() {
+        super({
+            user: 'CurrentUserStore.user'
+        });
+    }
+
     images() {
         return [
             [600, 300],
@@ -27,6 +33,10 @@ export default class Index extends React.Component {
     }
 
     render() {
-        return <ImageGrid images={this.images()} />;
+        return <div>
+            {this.state.user && <ImageUploader />}
+
+            <ImageGrid images={this.images()} />
+        </div>;
     }
 }

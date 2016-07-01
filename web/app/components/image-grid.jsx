@@ -1,4 +1,4 @@
-var maxRowWidth = 1279,
+var maxRowWidth = window.innerWidth - 1,
     preferredRowHeight = 300,
     maxRowHeight = 500;
 

@@ -1,0 +1,75 @@
+@mixin flex-rows {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: column;
+  flex-flow: column;
+}
+
+@mixin flex-cols {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row;
+  flex-flow: row;
+}
+
+@mixin flex-wrap {
+  flex-wrap: wrap;
+}
+
+@mixin flex-fill {
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+@mixin flex-no-shrink {
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+
+@mixin _flex-justify($value) {
+  -webkit-justify-content: $value;
+  justify-content: $value;
+}
+
+@mixin _flex-align($value) {
+  -webkit-align-items: $value;
+  align-items: $value;
+}
+
+@mixin flex-justify-center {
+  @include _flex-justify(center);
+}
+
+@mixin flex-justify-start {
+  @include _flex-justify(flex-start);
+}
+
+@mixin flex-justify-end {
+  @include _flex-justify(flex-end);
+}
+
+@mixin flex-align-start {
+  @include _flex-align(flex-start);
+}
+
+@mixin flex-align-center {
+  @include _flex-align(center);
+}
+
+@mixin flex-align-stretch {
+  @include _flex-align(stretch);
+}
+
+@mixin flex-align-end {
+  @include _flex-align(flex-end);
+}
+
+@mixin flex-justify-space-between {
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+}
+
+@mixin flex-justify-space-around {
+  justify-content: space-around;
+  -webkit-justify-content: space-around;
+}

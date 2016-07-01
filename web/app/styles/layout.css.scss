@@ -19,7 +19,7 @@ a {
 }
 
 .view-content {
-  width: $site-width;
+  max-width: $site-width;
   margin: 0 auto;
 }
 
@@ -27,17 +27,49 @@ a {
   padding: 20px;
 }
 
-input.form-control, button.btn {
-  border-radius: 0;
+.btn {
+  &,
+  &:focus {
+    background-color: darken(white, 5%);
+    border-color: darken(white, 5%);
+  }
+
+  &,
+  &:focus,
+  &:active:focus {
+    outline: none;
+  }
+
+  &:hover,
+  &:focus:hover,
+  &:active:hover {
+    background-color: darken(white, 10%);
+    border-color: darken(white, 10%);
+  }
+
+  &:active:focus {
+    background-color: darken(white, 15%);
+    border-color: darken(white, 15%);
+  }
 }
 
 .btn-primary {
-  background-color: $color;
-  border-color: $color;
+  &,
+  &:focus {
+    background-color: $color;
+    border-color: $color;
+  }
 
-  &:hover {
+  &:hover,
+  &:focus:hover,
+  &:active:hover {
     background-color: darken($color, 10%);
     border-color: darken($color, 10%);
+  }
+
+  &:active:focus {
+    background-color: darken($color, 15%);
+    border-color: darken($color, 15%);
   }
 }
 
