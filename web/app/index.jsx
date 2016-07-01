@@ -39,6 +39,7 @@ function requireAllStyles() {
     requireContext.keys().forEach(requireContext);
 }
 
+requireGlobally(null, require.context('./lib', true, /\.jsx?$/));
 requireGlobally(null, require.context('./components', true, /\.jsx?$/));
 requireGlobally(null, require.context('./stores', true, /\.jsx?$/));
 requireGlobally(null, require.context('./services', true, /\.jsx?$/));

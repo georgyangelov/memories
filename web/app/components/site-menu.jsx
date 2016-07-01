@@ -1,16 +1,8 @@
-export default class SiteMenu extends React.Component {
+export default class SiteMenu extends StoreAwareComponent {
     constructor() {
-        super();
-
-        this.state = {
-            user: CurrentUserStore.value('user')
-        };
-
-        this.unwatch = CurrentUserStore.watch('user', (user) => this.setState({user: user}));
-    }
-
-    componentWillUnmount() {
-        this.unwatch();
+        super({
+            user: 'CurrentUserStore.user'
+        });
     }
 
     render() {
