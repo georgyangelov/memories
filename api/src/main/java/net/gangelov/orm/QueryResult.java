@@ -5,19 +5,22 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QueryResult<T extends Model> {
     private ResultSet resultSet;
     private Class<T> modelClass = null;
+    private List<String> includes;
 
     public QueryResult(PreparedStatement statement) throws SQLException {
         resultSet = statement.getResultSet();
     }
 
-    public QueryResult(PreparedStatement statement, Class<T> modelClass) throws SQLException {
+    public QueryResult(PreparedStatement statement, Class<T> modelClass, List<String> includes) throws SQLException {
         resultSet = statement.getResultSet();
         this.modelClass = modelClass;
+        this.includes = includes;
     }
 
     public List<T> results() throws SQLException {
@@ -33,6 +36,10 @@ public class QueryResult<T extends Model> {
 
         while (resultSet.next()) {
             results.add((E)ModelReflection.get(modelClass).loadFromResultSetRow(resultSet));
+        }
+
+        for (String association : includes) {
+            ModelReflection.get(modelClass).belongsTo.get(association).load(results);
         }
 
         return results;
@@ -51,7 +58,13 @@ public class QueryResult<T extends Model> {
             return null;
         }
 
-        return (E)ModelReflection.get(modelClass).loadFromResultSetRow(resultSet);
+        E result = (E)ModelReflection.get(modelClass).loadFromResultSetRow(resultSet);
+
+        for (String association : includes) {
+            ModelReflection.get(modelClass).belongsTo.get(association).load(Arrays.asList(result));
+        }
+
+        return result;
     }
 
     public Object getSingle() throws SQLException {

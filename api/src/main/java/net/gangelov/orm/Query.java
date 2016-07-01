@@ -28,6 +28,8 @@ public class Query<T extends Model> implements Cloneable {
     protected final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
     protected final LinkedHashMap<String, List<Object>> wheres = new LinkedHashMap<>();
 
+    public final List<String> includes = new ArrayList<>();
+
     public Query(Connection connection) {
         this.connection = connection;
     }
@@ -44,6 +46,7 @@ public class Query<T extends Model> implements Cloneable {
 
         obj.values.putAll(values);
         obj.wheres.putAll(wheres);
+        obj.includes.addAll(includes);
 
         return obj;
     }
@@ -51,6 +54,16 @@ public class Query<T extends Model> implements Cloneable {
     public Query<T> forModel(Class<T> klass) {
         Query<T> q = select("*").from(ModelReflection.get(klass).tableName);
         q.modelClass = klass;
+
+        return q;
+    }
+
+    public Query<T> include(String... associations) {
+        Query<T> q = clone();
+
+        for (String a : associations) {
+            q.includes.add(a);
+        }
 
         return q;
     }
@@ -136,6 +149,18 @@ public class Query<T extends Model> implements Cloneable {
         Query<T> q = clone();
 
         q.wheres.put(where, Arrays.asList(args));
+
+        return q;
+    }
+
+    public Query<T> whereIn(String column, List<Object> values) {
+        Query<T> q = clone();
+
+        String placeholders = values.stream()
+                .map(value -> "?")
+                .collect(Collectors.joining(", "));
+
+        q.wheres.put("\"" + column + "\" in (" + placeholders + ")", values);
 
         return q;
     }
@@ -256,7 +281,7 @@ public class Query<T extends Model> implements Cloneable {
         statement.execute();
 
         if (modelClass != null) {
-            return new QueryResult<T>(statement, modelClass);
+            return new QueryResult<T>(statement, modelClass, includes);
         } else {
             return new QueryResult<T>(statement);
         }

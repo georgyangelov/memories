@@ -51,8 +51,8 @@ public class User extends Model {
         return query(User.class);
     }
 
-    public Query<Photo> photos() {
-        return Photo.query().where("user_id", id);
+    public Query<Image> images() {
+        return Image.query().where("user_id", id);
     }
 
     public void setPassword(String password) {

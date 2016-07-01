@@ -1,5 +1,6 @@
 package net.gangelov.orm;
 
+import net.gangelov.orm.associations.BelongsToAssociation;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,7 @@ public class ModelReflection {
     public final Class<? extends Model> klass;
     public final Map<String, java.lang.reflect.Field> attributes = new HashMap<>();
     public final Map<Hook.Type, List<Method>> hooks = new HashMap<>();
+    public final Map<String, BelongsToAssociation> belongsTo = new HashMap<>();
 
     public Database db;
 
@@ -34,6 +36,13 @@ public class ModelReflection {
                 createTimestamp = field.getAnnotation(Field.class).name();
             } else if (field.isAnnotationPresent(UpdateTimestamp.class)) {
                 updateTimestamp = field.getAnnotation(Field.class).name();
+            } else if (field.isAnnotationPresent(BelongsTo.class)) {
+                BelongsTo annotation = field.getAnnotation(BelongsTo.class);
+
+                belongsTo.put(
+                        field.getName(),
+                        new BelongsToAssociation(model, annotation.model(), annotation.key(), field)
+                );
             }
         }
 
