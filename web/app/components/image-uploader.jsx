@@ -62,6 +62,7 @@ export default class ImageUploader extends React.Component {
             }
 
             this.reset();
+            ImageStore.reload();
         });
     }
 }

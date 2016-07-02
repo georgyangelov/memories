@@ -1,7 +1,7 @@
 export default class ImageThumbnail extends React.Component {
     render() {
         var style = {
-            backgroundImage: `url(${this.props.image.url})`
+            backgroundImage: `url(${this.props.image.imageUrl})`
         };
 
         return <div className="image-thumbnail" style={style}>
