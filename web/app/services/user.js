@@ -1,33 +1,28 @@
 export default class User {
     static findByToken(accessToken, next) {
-        Requests.get(`/users/${accessToken}`, next);
+        request.get(`/users/${accessToken}`)
+               .use(Requests.defaults)
+               .end(Requests.response(next));
     }
 
     static create(email, password, next) {
-        Requests.apiNoAuth({
-            url: '/users',
-            method: 'PUT',
-            json: {
-                email: email,
-                password: password
-            }
-        }, next);
+        request.put('/users')
+               .use(Requests.defaults)
+               .send({email: email, password: password})
+               .end(Requests.response(next));
     }
 
     static auth(email, password, next) {
-        Requests.apiNoAuth({
-            url: '/users/auth',
-            method: 'POST',
-            json: {
-                email: email,
-                password: password
-            }
-        }, next);
+        request.post('/users/auth')
+               .use(Requests.defaults)
+               .send({email: email, password: password})
+               .end(Requests.response(next));
     }
 
     static deauth(accessToken, next) {
-        Requests.post('/users/deauth', {
-            accessToken: accessToken
-        }, next);
+        request.post('/users/deauth')
+               .use(Requests.defaults)
+               .send({accessToken: accessToken})
+               .end(Requests.response(next));
     }
 }

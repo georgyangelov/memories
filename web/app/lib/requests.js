@@ -1,87 +1,24 @@
 export default class Requests {
-    static apiNoAuth(options, next) {
-        var requestOptions = _.merge({
-            baseUrl: 'http://localhost:8080/',
-            headers: {
-                'Accept': 'application/json'
-            },
-            json: true
-        }, options);
-
-        return request(requestOptions, this.responseHandler(next));
-    }
-
-    static get(url, data, next) {
-        if (typeof next === 'undefined') {
-            next = data;
-            data = null;
+    static defaults(request) {
+        if (request.url[0] === '/') {
+            request.url = Constants.API_URL + request.url;
         }
 
-        this.apiNoAuth({
-            url: url,
-            method: 'GET',
-            headers: {
-                'Authorization': CurrentUserStore.get('accessToken')
-            },
-            qs: data
-        }, next);
+        return request.accept('json');
     }
 
-    static put(url, data, next) {
-        if (typeof next === 'undefined') {
-            next = data;
-            data = null;
-        }
-
-        this.apiNoAuth({
-            url: url,
-            method: 'PUT',
-            headers: {
-                'Authorization': CurrentUserStore.get('accessToken')
-            },
-            json: data
-        }, next);
+    static auth() {
+        return request.use(Requests.defaults)
+                      .set('Authorization', CurrentUserStore.get('accessToken'));
     }
 
-    static post(url, data, next) {
-        if (typeof next === 'undefined') {
-            next = data;
-            data = null;
-        }
-
-        this.apiNoAuth({
-            url: url,
-            method: 'POST',
-            headers: {
-                'Authorization': CurrentUserStore.get('accessToken')
-            },
-            json: data
-        }, next);
-    }
-
-    static delete(url, data, next) {
-        if (typeof next === 'undefined') {
-            next = data;
-            data = null;
-        }
-
-        this.apiNoAuth({
-            url: url,
-            method: 'DELETE',
-            headers: {
-                'Authorization': CurrentUserStore.get('accessToken')
-            },
-            json: data
-        }, next);
-    }
-
-    static responseHandler(next) {
-        return (error, response, data) => {
-            if (error || response.statusCode !== 200) {
-                return next(error || data || response.statusCode || 'unknown_error');
+    static response(next) {
+        return (error, response) => {
+            if (error || !response.ok) {
+                return next(error || response.body || 'unknown_error', null, response);
             }
 
-            next(null, data);
+            next(null, response.body, response);
         };
     }
 }

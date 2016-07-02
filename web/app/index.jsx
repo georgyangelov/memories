@@ -2,8 +2,9 @@ import React from 'react';
 import {Link} from 'react-router';
 import classNames from 'classnames';
 import _ from 'lodash';
-import request from 'request';
+import request from 'superagent';
 import Dropzone from 'react-dropzone';
+import constants from './config/constants.js';
 
 global.React = React;
 global.Link = Link;
@@ -11,6 +12,7 @@ global.cx = classNames;
 global._ = _;
 global.request = request;
 global.Dropzone = Dropzone;
+global.Constants = constants;
 
 function requireGlobally(namespace, requireContext) {
     requireContext.keys().forEach(file => {

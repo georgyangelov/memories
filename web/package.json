@@ -18,9 +18,9 @@
     "react-dom": "^15.0.2",
     "react-dropzone": "^3.5.1",
     "react-router": "^2.4.0",
-    "request": "^2.65.0",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.1",
+    "superagent": "^2.0.0",
     "webpack": "^1.13.0"
   },
   "devDependencies": {
