@@ -56,6 +56,7 @@ export default class ImageGrid extends React.Component {
 
     rows() {
         var images = this.props.images,
+            rowIndex = 0,
             row = [],
             rowWidth = 0,
             rows = [];
@@ -68,14 +69,14 @@ export default class ImageGrid extends React.Component {
             rowWidth += image.scaledWidth;
 
             if (rowWidth > maxRowWidth) {
-                rows.push({images: row, width: rowWidth});
+                rows.push({images: row, width: rowWidth, rowIndex: rowIndex++});
                 row = [];
                 rowWidth = 0;
             }
         });
 
         if (row.length > 0) {
-            rows.push({images: row, width: rowWidth});
+            rows.push({images: row, width: rowWidth, rowIndex: rowIndex++});
         }
 
         return rows;
@@ -94,11 +95,11 @@ export default class ImageGrid extends React.Component {
                 height: newRowHeight
             };
 
-            return <div className="image-grid-image" style={style}>
+            return <div className="image-grid-image" style={style} key={image.id}>
                 <ImageThumbnail image={image} onView={this.viewImage.bind(this, image)} />
             </div>;
         });
 
-        return <div className="image-grid-row">{rowElements}</div>;
+        return <div className="image-grid-row" key={row.rowIndex}>{rowElements}</div>;
     }
 }

@@ -15,8 +15,8 @@ export default class SiteMenu extends StoreAwareComponent {
 
     renderLoggedIn() {
         return [
-            <li>Hello {this.state.user.email}</li>,
-            <li><a onClick={this.logout.bind(this)}>Logout</a></li>
+            <li key="hello">Hello {this.state.user.email}</li>,
+            <li key="logout"><a onClick={this.logout.bind(this)}>Logout</a></li>
         ];
     }
 
@@ -26,13 +26,13 @@ export default class SiteMenu extends StoreAwareComponent {
 
     renderLoggedOut() {
         return [
-            <li>
+            <li key="register">
                 <Link to={{
                     pathname: 'register',
                     state: {modal: true, returnTo: this.props.location.pathname}
                 }}>Register</Link>
             </li>,
-            <li>
+            <li key="login">
                 <Link to={{
                     pathname: 'login',
                     state: {modal: true, returnTo: this.props.location.pathname}

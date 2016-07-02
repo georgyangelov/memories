@@ -154,14 +154,19 @@ public class Query<T extends Model> implements Cloneable {
         return q;
     }
 
-    public Query<T> whereIn(String column, List<Object> values) {
+    public <E> Query<T> whereIn(String column, List<E> values) {
         Query<T> q = clone();
+
+        if (values.size() == 0) {
+            q.wheres.put("0=1", new ArrayList<>());
+            return q;
+        }
 
         String placeholders = values.stream()
                 .map(value -> "?")
                 .collect(Collectors.joining(", "));
 
-        q.wheres.put("\"" + column + "\" in (" + placeholders + ")", values);
+        q.wheres.put("\"" + column + "\" in (" + placeholders + ")", (List<Object>)values);
 
         return q;
     }

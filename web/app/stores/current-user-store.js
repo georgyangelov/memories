@@ -39,6 +39,8 @@ class CurrentUserStoreClass extends BaseStore {
             user: null,
             accessToken: null
         });
+
+        window.localStorage.removeItem('accessToken');
     }
 }
 

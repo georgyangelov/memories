@@ -63,6 +63,7 @@ export default class Register extends React.Component {
                 }
 
                 CurrentUserStore.login(data.user, data.accessToken);
+                this.props.close();
             });
         });
     }

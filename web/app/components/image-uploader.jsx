@@ -59,7 +59,7 @@ export default class ImageUploader extends React.Component {
     upload(event) {
         event.preventDefault();
 
-        Image.create(this.state.file, this.state.name, (error, data) => {
+        Image.create(this.state.file, this.state.name, this.state.tags, (error, data) => {
             if (error) {
                 this.setState({errors: error.messages || ['Internal server error']});
                 return;

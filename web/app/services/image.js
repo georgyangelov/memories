@@ -6,11 +6,12 @@ export default class Image {
             .end(Requests.response(next));
     }
 
-    static create(file, name, next) {
+    static create(file, name, tags, next) {
         request
             .put('/images')
             .use(Requests.auth)
             .field('name', name)
+            .field('tags', tags)
             .attach('image', file)
             .end(Requests.response(next));
     }
