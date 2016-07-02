@@ -14,14 +14,19 @@ export default class ImageThumbnail extends StoreAwareComponent {
                 {image.name && <h2>{image.name}</h2>}
                 <h3>by {image.user.name}</h3>
 
-                {this.isImageAdmin() && this.renderAdminControls()}
+                {this.renderActions()}
             </div>
         </div>;
     }
 
-    renderAdminControls() {
-        return <button onClick={this.deleteImage.bind(this)}
-                       className="btn btn-danger btn-sm">Delete</button>
+    renderActions() {
+        return <div className="actions">
+            <button onClick={this.props.onView}
+                    className="btn btn-primary btn-sm">View</button>
+
+            {this.isImageAdmin() && <button onClick={this.deleteImage.bind(this)}
+                                            className="btn btn-danger btn-sm">Delete</button>}
+        </div>;
     }
 
     isImageAdmin() {

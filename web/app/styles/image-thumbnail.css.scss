@@ -39,6 +39,12 @@
       font-size: 13px;
       color: darken(white, 10%);
     }
+
+    .actions {
+      button + button {
+        margin-left: 10px;
+      }
+    }
   }
 
   &:hover {
