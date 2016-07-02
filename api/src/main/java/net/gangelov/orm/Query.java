@@ -22,7 +22,8 @@ public class Query<T extends Model> implements Cloneable {
     private final Connection connection;
     private String table = null,
                    returning = null,
-                   select = null;
+                   select = null,
+                   order = null;
     private Class<T> modelClass = null;
 
     protected final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
@@ -165,6 +166,14 @@ public class Query<T extends Model> implements Cloneable {
         return q;
     }
 
+    public Query<T> order(String column, String orderType) {
+        Query<T> q = clone();
+
+        q.order = "\"" + column + "\" " + orderType;
+
+        return q;
+    }
+
     public Query<T> returning(String column) {
         Query<T> q = clone();
 
@@ -186,6 +195,11 @@ public class Query<T extends Model> implements Cloneable {
                 if (wheres.size() > 0) {
                     sql.append(" where ");
                     sql.append(buildWhereClause());
+                }
+
+                if (order != null) {
+                    sql.append(" order by ");
+                    sql.append(order);
                 }
 
                 break;
