@@ -21,6 +21,7 @@ public class Users {
     @Produces(MediaType.APPLICATION_JSON)
     public User create(JSONParams params) throws SQLException, IOException, ValidationException {
         User user = new User();
+        user.name = params.requireString("name");
         user.email = params.requireString("email");
         user.setPassword(params.requireString("password"));
 

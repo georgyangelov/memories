@@ -32,7 +32,7 @@ export default class BaseStore {
     }
 
     setState(state) {
-        this.state = _.merge({}, this.state, state);
+        this.state = _.extend({}, this.state, state);
 
         _.each(state, (value, key) => this.notifyUpdateTo(key));
     }

@@ -14,4 +14,11 @@ export default class Image {
             .attach('image', file)
             .end(Requests.response(next));
     }
+
+    static delete(imageId, next) {
+        request
+            .delete(`/images/${imageId}`)
+            .use(Requests.auth)
+            .end(Requests.response(next));
+    }
 }

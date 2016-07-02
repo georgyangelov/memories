@@ -23,6 +23,9 @@ public class User extends Model {
     @Id(name="id")
     public Integer id;
 
+    @Field(name="name")
+    public String name;
+
     @Field(name="email")
     public String email;
 
@@ -84,6 +87,7 @@ public class User extends Model {
     }
 
     private static final Validator<User> validator = new CompositeValidator<>(
+            new FieldPresenceValidator<>("name", user -> user.name),
             new FieldPresenceValidator<>("email", user -> user.email),
             new EmailValidator<>("email", user -> user.email),
             new FieldPresenceValidator<>("password", user -> user.password),

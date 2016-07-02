@@ -6,11 +6,11 @@ export default class User {
             .end(Requests.response(next));
     }
 
-    static create(email, password, next) {
+    static create(name, email, password, next) {
         request
             .put('/users')
             .use(Requests.defaults)
-               .send({email: email, password: password})
+               .send({name: name, email: email, password: password})
                .end(Requests.response(next));
     }
 

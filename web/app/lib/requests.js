@@ -12,13 +12,15 @@ export default class Requests {
                       .set('Authorization', CurrentUserStore.get('accessToken'));
     }
 
-    static response(next) {
+    static response(next, notifyCalls) {
         return (error, response) => {
             if (error || !response.ok) {
                 return next(error || response.body || 'unknown_error', null, response);
             }
 
             next(null, response.body, response);
+
+            _.each(notifyCalls || [], _.apply);
         };
     }
 }

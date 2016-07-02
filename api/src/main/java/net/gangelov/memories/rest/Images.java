@@ -38,7 +38,9 @@ public class Images {
 
         File imageFile = ImageFileStore.get(image);
 
-        return Response.ok(imageFile, ImageFileStore.getMediaType(imageFile)).build();
+        return Response.ok(imageFile, ImageFileStore.getMediaType(imageFile))
+                .header("Cache-Control", "public, max-age=31536000")
+                .build();
     }
 
     @PUT
@@ -53,6 +55,7 @@ public class Images {
         User user = User.findByAccessToken(accessToken);
         Image image = new Image();
         image.userId = user.id;
+        image.name = name;
 
         ImageFileStore store = new ImageFileStore(contentDisposition.getFileName(), fileInputStream);
         store.ensureValid();
@@ -62,5 +65,23 @@ public class Images {
         image.save();
 
         return image;
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @ResourceFilters({AuthenticationFilter.class})
+    public void delete(@HeaderParam("Authorization") String accessToken, @PathParam("id") int id) throws SQLException {
+        User user = User.findByAccessToken(accessToken);
+        Image image = Image.query().where("id", id).first();
+
+        if (image == null) {
+            throw new ApiError(404, "image_not_found", "No image with this id");
+        }
+
+        if (!user.id.equals(image.userId)) {
+            throw new ApiError(401, "no_permission", "You cannot remove someone else's image");
+        }
+
+        Image.query().delete().where("id", id).execute();
     }
 }

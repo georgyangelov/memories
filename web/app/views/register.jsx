@@ -14,6 +14,12 @@ export default class Register extends React.Component {
             <h1>Register</h1>
             <form className="padding" onSubmit={this.register.bind(this)}>
                 <fieldset className="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" className="form-control" id="name" placeholder="Enter your name"
+                           onChange={(event) => this.setState({name: event.target.value})} />
+                </fieldset>
+
+                <fieldset className="form-group">
                     <label for="email">Email address</label>
                     <input type="text" className="form-control" id="email" placeholder="Enter email"
                            onChange={(event) => this.setState({email: event.target.value})} />
@@ -44,7 +50,7 @@ export default class Register extends React.Component {
 
         this.setState({errors: []});
 
-        User.create(this.state.email, this.state.password, (error, data) => {
+        User.create(this.state.name, this.state.email, this.state.password, (error, data) => {
             if (error) {
                 this.setState({errors: error.messages});
                 return;

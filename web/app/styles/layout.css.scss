@@ -27,33 +27,7 @@ a {
   padding: 20px;
 }
 
-.btn {
-  &,
-  &:focus {
-    background-color: darken(white, 5%);
-    border-color: darken(white, 5%);
-  }
-
-  &,
-  &:focus,
-  &:active:focus {
-    outline: none;
-  }
-
-  &:hover,
-  &:focus:hover,
-  &:active:hover {
-    background-color: darken(white, 10%);
-    border-color: darken(white, 10%);
-  }
-
-  &:active:focus {
-    background-color: darken(white, 15%);
-    border-color: darken(white, 15%);
-  }
-}
-
-.btn-primary {
+@mixin button-style($color) {
   &,
   &:focus {
     background-color: $color;
@@ -72,6 +46,17 @@ a {
     border-color: darken($color, 15%);
   }
 }
+
+.btn {
+  &,
+  &:focus,
+  &:active:focus {
+    outline: none;
+  }
+}
+
+.btn-primary { @include button-style($color); }
+.btn-danger  { @include button-style($dark-red); }
 
 .form-control:focus {
   border-color: $color;
