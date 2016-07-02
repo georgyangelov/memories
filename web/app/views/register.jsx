@@ -12,6 +12,7 @@ export default class Register extends React.Component {
     render() {
         return <div className="login-view">
             <h1>Register</h1>
+
             <form className="padding" onSubmit={this.register.bind(this)}>
                 <fieldset className="form-group">
                     <label for="name">Name</label>
@@ -35,6 +36,9 @@ export default class Register extends React.Component {
                 {this.renderErrors(this.state.errors || [])}
 
                 <button type="submit" className="btn btn-primary btn-block">Submit</button>
+
+                <button type="button" onClick={this.props.close}
+                        className="btn btn-block cancel-btn">Close</button>
             </form>
         </div>;
     }
