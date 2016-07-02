@@ -39,7 +39,7 @@ public class QueryResult<T extends Model> {
         }
 
         for (String association : includes) {
-            ModelReflection.get(modelClass).belongsTo.get(association).load(results);
+            ModelReflection.get(modelClass).associations.get(association).load(results);
         }
 
         return results;

@@ -1,4 +1,8 @@
 package net.gangelov.orm.associations;
 
-abstract public class Association {
+import java.sql.SQLException;
+import java.util.List;
+
+abstract public class Association<T> {
+    abstract public void load(List<T> models) throws SQLException;
 }

@@ -47,10 +47,6 @@ public class User extends Model {
     @JsonSerialize(using = InstantSerializer.class)
     public Instant updatedAt;
 
-    @Field(name="taken_at")
-    @JsonSerialize(using = InstantSerializer.class)
-    public Instant takenAt;
-
     public User() {
         super(User.class);
     }

@@ -17,6 +17,7 @@ import org.postgresql.geometric.PGpoint;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Collection;
 
 @Table(name="images")
 public class Image extends Model {
@@ -58,6 +59,13 @@ public class Image extends Model {
 
     @BelongsTo(model=User.class, key="user_id")
     public User user;
+
+    @HasMany(model=ImageTag.class, foreignKey="image_id")
+    @JsonIgnore
+    public Collection<ImageTag> imageTags;
+
+    @HasManyThrough(model=Tag.class, through="imageTags", foreignKey="tag_id")
+    public Collection<Tag> tags;
 
     @JsonProperty("imageUrl")
     public String getImageUrl() {

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BelongsToAssociation<T extends Model, R extends Model> extends Association {
+public class BelongsToAssociation<T extends Model, R extends Model> extends Association<T> {
     private final Class<T> modelClass;
     private final Class<R> refModelClass;
     private final String key;

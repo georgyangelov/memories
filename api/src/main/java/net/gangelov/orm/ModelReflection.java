@@ -1,6 +1,9 @@
 package net.gangelov.orm;
 
+import net.gangelov.orm.associations.Association;
 import net.gangelov.orm.associations.BelongsToAssociation;
+import net.gangelov.orm.associations.HasManyAssociation;
+import net.gangelov.orm.associations.HasManyThroughAssociation;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +19,13 @@ public class ModelReflection {
     public final Class<? extends Model> klass;
     public final Map<String, java.lang.reflect.Field> attributes = new HashMap<>();
     public final Map<Hook.Type, List<Method>> hooks = new HashMap<>();
+
+
+    public final Map<String, Association> associations = new HashMap<>();
+
     public final Map<String, BelongsToAssociation> belongsTo = new HashMap<>();
+    public final Map<String, HasManyAssociation> hasMany = new HashMap<>();
+    public final Map<String, HasManyThroughAssociation> hasManyThrough = new HashMap<>();
 
     public Database db;
 
@@ -38,11 +47,30 @@ public class ModelReflection {
                 updateTimestamp = field.getAnnotation(Field.class).name();
             } else if (field.isAnnotationPresent(BelongsTo.class)) {
                 BelongsTo annotation = field.getAnnotation(BelongsTo.class);
+                BelongsToAssociation assoc = new BelongsToAssociation(model, annotation.model(), annotation.key(), field);
 
-                belongsTo.put(
-                        field.getName(),
-                        new BelongsToAssociation(model, annotation.model(), annotation.key(), field)
+                associations.put(field.getName(), assoc);
+                belongsTo.put(field.getName(), assoc);
+            } else if (field.isAnnotationPresent(HasMany.class)) {
+                HasMany annotation = field.getAnnotation(HasMany.class);
+                HasManyAssociation assoc = new HasManyAssociation(model, annotation.model(), annotation.foreignKey(), field);
+
+                associations.put(field.getName(), assoc);
+                hasMany.put(field.getName(), assoc);
+            } else if (field.isAnnotationPresent(HasManyThrough.class)) {
+                HasManyThrough annotation = field.getAnnotation(HasManyThrough.class);
+                HasManyAssociation throughAssociation = hasMany.get(annotation.through());
+
+                if (throughAssociation == null) {
+                    throw new RuntimeException("HasManyThrough must be declared above HasMany");
+                }
+
+                HasManyThroughAssociation assoc = new HasManyThroughAssociation(
+                        model, throughAssociation, annotation.model(), annotation.foreignKey(), field
                 );
+
+                associations.put(field.getName(), assoc);
+                hasManyThrough.put(field.getName(), assoc);
             }
         }
 
@@ -62,7 +90,13 @@ public class ModelReflection {
 
     public Object valueFor(Model model, String name) {
         try {
-            return attributes.get(name).get(model);
+            java.lang.reflect.Field field = attributes.get(name);
+
+            if (field == null) {
+                throw new RuntimeException("Expected " + klass.getName() + " to have attribute named " + name);
+            }
+
+            return field.get(model);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new RuntimeException("Cannot get value from field - is private");

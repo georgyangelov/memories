@@ -24,7 +24,10 @@ import java.util.List;
 public class Images {
     @GET
     public List<Image> index() throws SQLException {
-        return Image.query().order("created_at", "desc").include("user").results();
+        return Image.query()
+                .order("created_at", "desc")
+                .include("user", "tags")
+                .results();
     }
 
     @GET
