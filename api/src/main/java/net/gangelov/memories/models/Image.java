@@ -1,7 +1,10 @@
 package net.gangelov.memories.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
+import net.gangelov.memories.Config;
 import net.gangelov.orm.*;
 import net.gangelov.orm.validators.FieldUniquenessValidator;
 import net.gangelov.validation.ValidationErrors;
@@ -10,6 +13,7 @@ import net.gangelov.validation.Validator;
 import net.gangelov.validation.validators.CompositeValidator;
 import net.gangelov.validation.validators.EmailValidator;
 import net.gangelov.validation.validators.FieldPresenceValidator;
+import org.postgresql.geometric.PGpoint;
 
 import java.sql.SQLException;
 import java.time.Instant;
@@ -23,10 +27,17 @@ public class Image extends Model {
     public Integer userId;
 
     @Field(name="file_path")
+    @JsonIgnore
     public String filePath;
 
     @Field(name="name")
     public String name;
+
+    @Field(name="width")
+    public Integer width;
+
+    @Field(name="height")
+    public Integer height;
 
     @CreateTimestamp
     @Field(name="created_at")
@@ -38,11 +49,27 @@ public class Image extends Model {
     @JsonSerialize(using = InstantSerializer.class)
     public Instant updatedAt;
 
+    @Field(name="taken_at")
+    @JsonSerialize(using = InstantSerializer.class)
+    public Instant takenAt;
+
+    @Field(name="coordinates")
+    public PGpoint coordinates;
+
     @BelongsTo(model=User.class, key="user_id")
     public User user;
 
+    @JsonProperty("imageUrl")
+    public String getImageUrl() {
+        if (id == null) {
+            return null;
+        }
+
+        return Config.BASE_URL + "/images/" + id + "/image";
+    }
+
     public Image() {
-        super(User.class);
+        super(Image.class);
     }
 
     public static Query<Image> query() {

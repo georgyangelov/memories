@@ -45,4 +45,11 @@ public class Strings {
     public static boolean isBlank(String str) {
         return !isPresent(str);
     }
+
+    public static String getExtension(String path) {
+        return path.substring(
+                path.lastIndexOf(".") + 1,
+                path.length()
+        );
+    }
 }

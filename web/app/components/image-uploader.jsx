@@ -2,7 +2,9 @@ export default class ImageUploader extends React.Component {
     constructor() {
         super();
 
-        this.state = {};
+        this.state = {
+            errors: []
+        };
     }
 
     render() {
@@ -12,8 +14,12 @@ export default class ImageUploader extends React.Component {
     renderWithFile() {
         return <form className="image-uploader" onSubmit={this.upload.bind(this)}>
             <div className="metadata-panel">
-                <input type="text" className="form-control" placeholder="Image name" />
-                <input type="text" className="form-control" placeholder="Tags" />
+                <input type="text" className="form-control" placeholder="Image name"
+                       onChange={(e) => this.setState({name: e.target.value})} />
+                <input type="text" className="form-control" placeholder="Tags"
+                       onChange={(e) => this.setState({tags: e.target.value})} />
+
+                {this.state.errors.map((error) => <div className="error">{error}</div>)}
             </div>
 
             <Dropzone className="preview" onDrop={this.onDrop.bind(this)} multiple={false}>
@@ -22,7 +28,7 @@ export default class ImageUploader extends React.Component {
 
             <div className="upload-panel">
                 <button type="submit" className="btn btn-primary btn-lg">Upload</button>
-                <button type="button" onClick={this.cancel.bind(this)} className="btn btn-lg">Cancel</button>
+                <button type="button" onClick={this.reset.bind(this)} className="btn btn-lg">Cancel</button>
             </div>
         </form>;
     }
@@ -30,22 +36,32 @@ export default class ImageUploader extends React.Component {
     renderWithoutFile() {
         return <div className="image-uploader">
             <Dropzone className="placeholder" onDrop={this.onDrop.bind(this)} multiple={false}>
-                Drop a picture or click here to upload.
+                Drop a picture here or click to upload.
             </Dropzone>
         </div>;
     }
 
     onDrop(files) {
         this.setState({
-            file: files[0]
+            file: files[0],
+            errors: []
         });
     }
 
-    cancel() {
+    reset() {
         this.setState({file: null});
     }
 
-    upload() {
+    upload(event) {
+        event.preventDefault();
 
+        Image.create(this.state.file, this.state.name, (error, data) => {
+            if (error) {
+                this.setState({errors: error.messages || ['Internal server error']});
+                return;
+            }
+
+            this.reset();
+        });
     }
 }

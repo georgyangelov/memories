@@ -7,7 +7,7 @@ export default class Requests {
         return request.accept('json');
     }
 
-    static auth() {
+    static auth(request) {
         return request.use(Requests.defaults)
                       .set('Authorization', CurrentUserStore.get('accessToken'));
     }

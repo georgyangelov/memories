@@ -15,6 +15,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 import java.time.Instant;
 
 @Table(name="users")
@@ -43,12 +44,20 @@ public class User extends Model {
     @JsonSerialize(using = InstantSerializer.class)
     public Instant updatedAt;
 
+    @Field(name="taken_at")
+    @JsonSerialize(using = InstantSerializer.class)
+    public Instant takenAt;
+
     public User() {
         super(User.class);
     }
 
     public static Query<User> query() {
         return query(User.class);
+    }
+
+    public static User findByAccessToken(String accessToken) throws SQLException {
+        return query().where("access_token", accessToken).first();
     }
 
     public Query<Image> images() {
