@@ -15,8 +15,10 @@ export default class ImageUploader extends React.Component {
         return <form className="image-uploader" onSubmit={this.upload.bind(this)}>
             <div className="metadata-panel">
                 <input type="text" className="form-control" placeholder="Image name"
+                       value={this.state.name}
                        onChange={(e) => this.setState({name: e.target.value})} />
                 <input type="text" className="form-control" placeholder="Tags"
+                       value={this.state.tags}
                        onChange={(e) => this.setState({tags: e.target.value})} />
 
                 {this.state.errors.map((error) => <div className="error">{error}</div>)}
@@ -44,7 +46,9 @@ export default class ImageUploader extends React.Component {
     onDrop(files) {
         this.setState({
             file: files[0],
-            errors: []
+            errors: [],
+            name: '',
+            tags: ''
         });
     }
 

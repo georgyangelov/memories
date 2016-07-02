@@ -15,7 +15,7 @@ export default class Requests {
     static response(next, notifyCalls) {
         return (error, response) => {
             if (error || !response.ok) {
-                return next(error || response.body || 'unknown_error', null, response);
+                return next(response.body || error || 'unknown_error', null, response);
             }
 
             next(null, response.body, response);

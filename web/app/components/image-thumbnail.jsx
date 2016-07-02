@@ -22,7 +22,7 @@ export default class ImageThumbnail extends StoreAwareComponent {
     renderActions() {
         return <div className="actions">
             <button onClick={this.props.onView}
-                    className="btn btn-primary btn-sm">View</button>
+                    className="btn btn-sm">View</button>
 
             {this.isImageAdmin() && <button onClick={this.deleteImage.bind(this)}
                                             className="btn btn-danger btn-sm">Delete</button>}

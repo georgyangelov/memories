@@ -55,8 +55,9 @@ a {
   }
 }
 
-.btn-primary { @include button-style($color); }
-.btn-danger  { @include button-style($dark-red); }
+.btn         { color: black; @include button-style(darken(white, 2%)); }
+.btn-primary { color: white; @include button-style($color); }
+.btn-danger  { color: white; @include button-style($dark-red); }
 
 .form-control:focus {
   border-color: $color;
