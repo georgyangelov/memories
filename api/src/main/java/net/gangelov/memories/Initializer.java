@@ -13,7 +13,7 @@ public class Initializer implements ServletContextListener
         try {
             Class.forName("org.postgresql.Driver");
             net.gangelov.orm.Model.initialize(
-                    "jdbc:postgresql://localhost/memories?user=postgres&password=password",
+                    Config.DB_CONNECTION_STRING,
                     "net.gangelov.memories.models"
             );
 //            Database.connect("jdbc:postgresql://localhost/memories?user=postgres&password=password");
