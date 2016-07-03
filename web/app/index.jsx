@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
 import classNames from 'classnames';
 import _ from 'lodash';
@@ -8,6 +9,7 @@ import constants from './config/constants.js';
 import Lightbox from 'react-images';
 
 global.React = React;
+global.ReactDOM = ReactDOM;
 global.Link = Link;
 global.cx = classNames;
 global._ = _;

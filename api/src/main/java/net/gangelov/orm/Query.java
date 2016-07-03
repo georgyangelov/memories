@@ -1,11 +1,14 @@
 package net.gangelov.orm;
 
+import net.gangelov.utils.Strings;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Query<T extends Model> implements Cloneable {
@@ -197,6 +200,45 @@ public class Query<T extends Model> implements Cloneable {
         return q;
     }
 
+    @SafeVarargs
+    public final Query<T> whereAnyOf(Query<T>... branches) {
+        List<String> whereQueries = new ArrayList<>();
+        List<Object> whereParams = new ArrayList<>();
+
+        for (Query<T> branch : branches) {
+            whereQueries.add(branch.buildWhereClause());
+
+            for (List<Object> branchWhere : branch.wheres.values()) {
+                whereParams.addAll(branchWhere);
+            }
+        }
+
+        String whereQuery = String.join(" or ", whereQueries);
+
+        Query<T> q = clone();
+        q.wheres.put(whereQuery, whereParams);
+
+        return q;
+    }
+
+    public Query<T> whereSearchLike(String field, String query) {
+        List<String> words = Arrays.stream(query.split("[\\s,]"))
+                .map(Strings::squish)
+                .filter(Strings::isPresent)
+                .distinct()
+                .collect(Collectors.toList());
+
+        String conditions = words.stream()
+                .map(word -> field + " ilike ?")
+                .collect(Collectors.joining(" or "));
+
+        List<String> values = words.stream()
+                .map(word -> "%" + word + "%")
+                .collect(Collectors.toList());
+
+        return whereSql(conditions, values);
+    }
+
     public Query<T> order(String column, String orderType) {
         Query<T> q = clone();
 
@@ -314,7 +356,7 @@ public class Query<T extends Model> implements Cloneable {
         return sql.toString();
     }
 
-    private String buildWhereClause() {
+    protected String buildWhereClause() {
         return this.wheres.keySet().stream()
                 .map(clause -> "(" + clause + ")")
                 .collect(Collectors.joining(" and "));

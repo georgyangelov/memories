@@ -37,16 +37,13 @@ public class Images {
     @GET
     @Path("/search/{query}")
     public List<Image> search(@PathParam("query") String query) throws SQLException {
-        List<Tag> tags = Tag.search(query).results();
-        List<Integer> tagIds = new ArrayList<>();
-
-        for (Tag tag : tags) {
-            tagIds.add(tag.id);
-        }
-
         return Image.query()
                 .joins("images_tags", "images_tags.image_id = images.id")
-                .whereIn("images_tags.tag_id", tagIds)
+                .joins("tags", "tags.id = images_tags.tag_id")
+                .whereAnyOf(
+                        Image.query().whereSearchLike("tags.name", query),
+                        Image.query().whereSearchLike("images.name", query)
+                )
                 .order("created_at", "desc")
                 .group("images.id")
                 .include("user", "tags")
