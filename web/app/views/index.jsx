@@ -1,9 +1,9 @@
 export default class Index extends StoreAwareComponent {
-    constructor(props) {
-        super(props, {
+    constructor(...args) {
+        super({
             user: 'CurrentUserStore.user',
             images: 'ImageStore.images'
-        });
+        }, ...args);
 
         ImageStore.reload();
     }
@@ -14,13 +14,27 @@ export default class Index extends StoreAwareComponent {
 
             {this.state.user && <ImageUploader />}
 
-            <ImageGrid images={this.state.images} />
+            <ImageGrid images={this.state.images} onShowMap={this.onShowMap.bind(this)} />
         </div>;
     }
 
     onSearch(query) {
         if (query) {
-            appHistory.push(`/search/${encodeURIComponent(query)}`);
+            this.context.router.push(`/search/${encodeURIComponent(query)}`);
         }
     }
+
+    onShowMap(image) {
+        this.context.router.push({
+            pathname: `/images/${encodeURIComponent(image.id)}/map`,
+            state: {
+                modal: true,
+                returnTo: this.props.location.pathname
+            }
+        });
+    }
 }
+
+Index.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};

@@ -1,6 +1,6 @@
 export default class SearchBox extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(...args) {
+        super(...args);
 
         this.state = {
             query: this.props.initialQuery || ''

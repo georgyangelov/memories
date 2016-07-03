@@ -1,0 +1,15 @@
+.image-map-view {
+  iframe {
+    width: 80vw;
+    height: 80vh;
+
+    border: none;
+  }
+
+  @media (max-width: 799px) {
+    iframe {
+      width: 100vw;
+      height: 100vh;
+    }
+  }
+}

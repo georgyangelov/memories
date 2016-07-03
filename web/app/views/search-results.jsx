@@ -1,6 +1,6 @@
 export default class SearchResults extends StoreAwareComponent {
-    constructor(props) {
-        super(props, {});
+    constructor(...args) {
+        super({}, ...args);
 
         this.state = {images: []};
     }
@@ -30,7 +30,7 @@ export default class SearchResults extends StoreAwareComponent {
         return <div>
             <SearchBox initialQuery={this.props.params.query} onSubmit={this.onSearch.bind(this)} />
 
-            <ImageGrid images={this.state.images} />
+            <ImageGrid images={this.state.images} onShowMap={this.onShowMap.bind(this)} />
         </div>;
     }
 
@@ -41,4 +41,18 @@ export default class SearchResults extends StoreAwareComponent {
             appHistory.push('/');
         }
     }
+
+    onShowMap(image) {
+        this.context.router.push({
+            pathname: `/images/${encodeURIComponent(image.id)}/map`,
+            state: {
+                modal: true,
+                returnTo: this.props.location.pathname
+            }
+        });
+    }
 }
+
+SearchResults.contextTypes = {
+    router: React.PropTypes.object.isRequired
+};

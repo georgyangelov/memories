@@ -29,4 +29,11 @@ export default class Image {
             .use(Requests.auth)
             .end(Requests.response(next));
     }
+
+    static get(imageId, next) {
+        request
+            .get(`/images/${encodeURIComponent(imageId)}`)
+            .use(Requests.auth)
+            .end(Requests.response(next));
+    }
 }

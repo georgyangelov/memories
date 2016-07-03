@@ -7,6 +7,7 @@ import request from 'superagent';
 import Dropzone from 'react-dropzone';
 import constants from './config/constants.js';
 import Lightbox from 'react-images';
+import moment from 'moment';
 
 global.React = React;
 global.ReactDOM = ReactDOM;
@@ -17,6 +18,7 @@ global.request = request;
 global.Dropzone = Dropzone;
 global.Constants = constants;
 global.Lightbox = Lightbox;
+global.moment = moment;
 
 function requireGlobally(namespace, requireContext) {
     requireContext.keys().forEach(file => {

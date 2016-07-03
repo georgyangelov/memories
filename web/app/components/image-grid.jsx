@@ -1,9 +1,9 @@
-var preferredRowHeight = 300,
+var preferredRowHeight = 340,
     maxRowHeight = 500;
 
 export default class ImageGrid extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(...args) {
+        super(...args);
 
         this.state = {
             currentImage: 0,
@@ -39,6 +39,7 @@ export default class ImageGrid extends React.Component {
                       currentImage={this.state.currentImage}
                       onClickPrev={this.previousImage.bind(this)}
                       onClickNext={this.nextImage.bind(this)}
+                      backdropClosesModal={true}
                       onClose={() => this.setState({lightboxOpen: false})} />
         </div>;
     }
@@ -110,7 +111,9 @@ export default class ImageGrid extends React.Component {
             };
 
             return <div className="image-grid-image" style={style} key={image.id}>
-                <ImageThumbnail image={image} onView={this.viewImage.bind(this, image)} />
+                <ImageThumbnail image={image}
+                                onView={this.viewImage.bind(this, image)}
+                                onShowMap={this.props.onShowMap.bind(undefined, image)} />
             </div>;
         });
 

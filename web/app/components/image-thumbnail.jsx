@@ -1,8 +1,8 @@
 export default class ImageThumbnail extends StoreAwareComponent {
-    constructor(props) {
-        super(props, {
+    constructor(...args) {
+        super({
             currentUser: 'CurrentUserStore.user'
-        });
+        }, ...args);
     }
 
     render() {
@@ -13,7 +13,13 @@ export default class ImageThumbnail extends StoreAwareComponent {
             <div className="controls">
                 {image.name && <h2>{image.name}</h2>}
                 <h3 className="tags">{this.renderTags()}</h3>
-                <h3 className="author">by {image.user.name}</h3>
+                <h3 className="author">
+                    by {image.user.name}
+
+                    {image.takenAt &&
+                        <span><br />taken on {moment.unix(image.takenAt).format('DD.MM.YYYY HH:mm:SS')}</span>
+                    }
+                </h3>
 
                 {this.renderActions()}
             </div>
@@ -31,8 +37,15 @@ export default class ImageThumbnail extends StoreAwareComponent {
             <button onClick={this.props.onView}
                     className="btn btn-sm">View</button>
 
-            {this.isImageAdmin() && <button onClick={this.deleteImage.bind(this)}
-                                            className="btn btn-danger btn-sm">Delete</button>}
+            {this.props.image.coordinates &&
+                <button onClick={this.props.onShowMap}
+                        className="btn btn-sm">Map</button>
+            }
+
+            {this.isImageAdmin() &&
+                <button onClick={this.deleteImage.bind(this)}
+                        className="btn btn-danger btn-sm">Delete</button>
+            }
         </div>;
     }
 

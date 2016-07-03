@@ -1,6 +1,6 @@
 export default class StoreAwareComponent extends React.Component {
-    constructor(props, storeProps) {
-        super(props);
+    constructor(storeProps, ...args) {
+        super(...args);
 
         storeProps = storeProps || [];
         this.state = this.state || {};

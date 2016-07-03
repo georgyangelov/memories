@@ -1,8 +1,8 @@
 export default class SiteMenu extends StoreAwareComponent {
-    constructor(props) {
-        super(props, {
+    constructor(...args) {
+        super({
             user: 'CurrentUserStore.user'
-        });
+        }, ...args);
     }
 
     render() {

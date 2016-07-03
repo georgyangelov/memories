@@ -61,7 +61,7 @@ public class QueryResult<T extends Model> {
         E result = (E)ModelReflection.get(modelClass).loadFromResultSetRow(resultSet);
 
         for (String association : includes) {
-            ModelReflection.get(modelClass).belongsTo.get(association).load(Arrays.asList(result));
+            ModelReflection.get(modelClass).associations.get(association).load(Arrays.asList(result));
         }
 
         return result;

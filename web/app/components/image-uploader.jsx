@@ -1,6 +1,6 @@
 export default class ImageUploader extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(...args) {
+        super(...args);
 
         this.state = {
             errors: []

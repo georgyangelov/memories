@@ -35,6 +35,18 @@ public class Images {
     }
 
     @GET
+    @Path("/{id}")
+    public Image get(@PathParam("id") int imageId) throws SQLException {
+        Image image = Image.query().where("id", imageId).include("user", "tags").first();
+
+        if (image == null) {
+            throw new ApiError(404, "image_not_found", "No image with this id");
+        }
+
+        return image;
+    }
+
+    @GET
     @Path("/search/{query}")
     public List<Image> search(@PathParam("query") String query) throws SQLException {
         return Image.query()
@@ -53,7 +65,7 @@ public class Images {
     @GET
     @Path("/{id}/image")
     public Response getImage(@PathParam("id") int imageId) throws SQLException {
-        Image image = Image.query().where("id", imageId).first();
+        Image image = Image.query().where("id", imageId).include("user", "tags").first();
 
         if (image == null) {
             throw new ApiError(404, "image_not_found", "No image with this id");
