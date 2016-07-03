@@ -1,5 +1,4 @@
-var maxRowWidth = window.innerWidth - 1,
-    preferredRowHeight = 300,
+var preferredRowHeight = 300,
     maxRowHeight = 500;
 
 export default class ImageGrid extends React.Component {
@@ -8,8 +7,24 @@ export default class ImageGrid extends React.Component {
 
         this.state = {
             currentImage: 0,
-            lightboxOpen: false
+            lightboxOpen: false,
+            maxRowWidth: window.innerWidth
         };
+
+        this.onResize = this.onResize.bind(this);
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.onResize);
+    }
+
+    onResize() {
+        console.log('resize');
+        this.setState({maxRowWidth: window.innerWidth});
+    }
+
+    componentWillUnmount() {
+        window.addEventListener('resize', onResize);
     }
 
     render() {
@@ -68,7 +83,7 @@ export default class ImageGrid extends React.Component {
             row.push(image);
             rowWidth += image.scaledWidth;
 
-            if (rowWidth > maxRowWidth) {
+            if (rowWidth > this.state.maxRowWidth) {
                 rows.push({images: row, width: rowWidth, rowIndex: rowIndex++});
                 row = [];
                 rowWidth = 0;
@@ -83,7 +98,7 @@ export default class ImageGrid extends React.Component {
     }
 
     renderRow(row) {
-        var newRowHeight = preferredRowHeight * (maxRowWidth / row.width);
+        var newRowHeight = preferredRowHeight * (this.state.maxRowWidth / row.width);
 
         if (newRowHeight > maxRowHeight) {
             newRowHeight = preferredRowHeight;
