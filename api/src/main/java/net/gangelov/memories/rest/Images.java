@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/images")
 public class Images {
@@ -28,6 +30,25 @@ public class Images {
     public List<Image> index() throws SQLException {
         return Image.query()
                 .order("created_at", "desc")
+                .include("user", "tags")
+                .results();
+    }
+
+    @GET
+    @Path("/search/{query}")
+    public List<Image> search(@PathParam("query") String query) throws SQLException {
+        List<Tag> tags = Tag.search(query).results();
+        List<Integer> tagIds = new ArrayList<>();
+
+        for (Tag tag : tags) {
+            tagIds.add(tag.id);
+        }
+
+        return Image.query()
+                .joins("images_tags", "images_tags.image_id = images.id")
+                .whereIn("images_tags.tag_id", tagIds)
+                .order("created_at", "desc")
+                .group("images.id")
                 .include("user", "tags")
                 .results();
     }

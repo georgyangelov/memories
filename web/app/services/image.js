@@ -6,6 +6,13 @@ export default class Image {
             .end(Requests.response(next));
     }
 
+    static search(query, next) {
+        request
+            .get(`/images/search/${encodeURIComponent(query)}`)
+            .use(Requests.auth)
+            .end(Requests.response(next));
+    }
+
     static create(file, name, tags, next) {
         request
             .put('/images')

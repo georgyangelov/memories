@@ -10,8 +10,9 @@ render((
         <Route path="/" component={App}>
             <IndexRoute component={views.Index} />
 
-            <Route path="/login" component={views.Login}/>
-            <Route path="/register" component={views.Register}/>
+            <Route path="/login" component={views.Login} />
+            <Route path="/register" component={views.Register} />
+            <Route path="/search/:query" component={views.SearchResults} />
         </Route>
     </Router>
 ), document.getElementById('app'))

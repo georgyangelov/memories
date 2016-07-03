@@ -23,11 +23,15 @@ public class Query<T extends Model> implements Cloneable {
     private String table = null,
                    returning = null,
                    select = null,
-                   order = null;
+                   order = null,
+                   group = null;
     private Class<T> modelClass = null;
+
+    private boolean distinct = false;
 
     protected final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
     protected final LinkedHashMap<String, List<Object>> wheres = new LinkedHashMap<>();
+    protected final LinkedHashMap<String, List<Object>> joins = new LinkedHashMap<>();
 
     public final List<String> includes = new ArrayList<>();
 
@@ -53,8 +57,18 @@ public class Query<T extends Model> implements Cloneable {
     }
 
     public Query<T> forModel(Class<T> klass) {
-        Query<T> q = select("*").from(ModelReflection.get(klass).tableName);
+        ModelReflection r = ModelReflection.get(klass);
+
+        Query<T> q = select("\"" + r.tableName + "\".*").from(r.tableName);
         q.modelClass = klass;
+
+        return q;
+    }
+
+    public Query<T> joins(String table, String on, Object... params) {
+        Query<T> q = clone();
+
+        q.joins.put("join \"" + table + "\" on (" + on + ")", Arrays.asList(params));
 
         return q;
     }
@@ -78,6 +92,14 @@ public class Query<T extends Model> implements Cloneable {
 
         q.type = Type.SELECT;
         q.select = select;
+
+        return q;
+    }
+
+    public Query<T> distinct() {
+        Query<T> q = clone();
+
+        q.distinct = true;
 
         return q;
     }
@@ -149,7 +171,11 @@ public class Query<T extends Model> implements Cloneable {
     public Query<T> whereSql(String where, Object... args) {
         Query<T> q = clone();
 
-        q.wheres.put(where, Arrays.asList(args));
+        if (args.length == 1 && args[0] instanceof List) {
+            q.wheres.put(where, (List)args[0]);
+        } else {
+            q.wheres.put(where, Arrays.asList(args));
+        }
 
         return q;
     }
@@ -166,7 +192,7 @@ public class Query<T extends Model> implements Cloneable {
                 .map(value -> "?")
                 .collect(Collectors.joining(", "));
 
-        q.wheres.put("\"" + column + "\" in (" + placeholders + ")", (List<Object>)values);
+        q.wheres.put(column + " in (" + placeholders + ")", (List<Object>)values);
 
         return q;
     }
@@ -175,6 +201,14 @@ public class Query<T extends Model> implements Cloneable {
         Query<T> q = clone();
 
         q.order = "\"" + column + "\" " + orderType;
+
+        return q;
+    }
+
+    public Query<T> group(String sql) {
+        Query<T> q = clone();
+
+        q.group = sql;
 
         return q;
     }
@@ -193,13 +227,28 @@ public class Query<T extends Model> implements Cloneable {
         switch(type) {
             case SELECT:
                 sql.append("select ");
+
+                if (distinct) {
+                    sql.append("distinct ");
+                }
+
                 sql.append(select);
                 sql.append(" from ");
                 sql.append("\"").append(table).append("\"");
 
+                if (joins.size() > 0) {
+                    sql.append(" ");
+                    sql.append(String.join(" ", joins.keySet()));
+                }
+
                 if (wheres.size() > 0) {
                     sql.append(" where ");
                     sql.append(buildWhereClause());
+                }
+
+                if (group != null) {
+                    sql.append(" group by ");
+                    sql.append(group);
                 }
 
                 if (order != null) {

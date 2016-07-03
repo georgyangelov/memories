@@ -50,6 +50,24 @@ public class Tag extends Model {
         return existingTags;
     }
 
+    public static Query<Tag> search(String query) {
+        List<String> words = Arrays.stream(query.split("[\\s,]"))
+                .map(Strings::squish)
+                .filter(Strings::isPresent)
+                .distinct()
+                .collect(Collectors.toList());
+
+        String conditions = words.stream()
+                .map(word -> "(name ilike ?)")
+                .collect(Collectors.joining(" or "));
+
+        List<String> values = words.stream()
+                .map(word -> "%" + word + "%")
+                .collect(Collectors.toList());
+
+        return query().whereSql(conditions, values);
+    }
+
     public static Query<Tag> query() {
         return Model.query(Tag.class);
     }

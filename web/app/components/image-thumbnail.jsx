@@ -1,6 +1,6 @@
 export default class ImageThumbnail extends StoreAwareComponent {
-    constructor() {
-        super({
+    constructor(props) {
+        super(props, {
             currentUser: 'CurrentUserStore.user'
         });
     }

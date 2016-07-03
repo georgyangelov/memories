@@ -2,8 +2,8 @@ var preferredRowHeight = 300,
     maxRowHeight = 500;
 
 export default class ImageGrid extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             currentImage: 0,
@@ -19,12 +19,11 @@ export default class ImageGrid extends React.Component {
     }
 
     onResize() {
-        console.log('resize');
         this.setState({maxRowWidth: window.innerWidth});
     }
 
     componentWillUnmount() {
-        window.addEventListener('resize', onResize);
+        window.removeEventListener('resize', this.onResize);
     }
 
     render() {
